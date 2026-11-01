@@ -2,7 +2,7 @@
 
 ## What it does
 
-A Horizon **native mod** (`.hnmod`) providing true 6-DOF elytra aerobatics:
+A Horizon **native mod** (`.hnmod`) providing true 6-DOF elytra aerobatics — inspired by the Minecraft Java mod *"Do a Barrel Roll":
 
 1. **Mouse X rolls**: while gliding, moving the mouse barrels/banks the camera freely around the look axis (no snap-back, full 360°).
 2. **Mouse Y pitches**: body pitch projected through the current roll, so pulling up while banked carves a turn; passing straight up/down flips into a loop-de-loop.
