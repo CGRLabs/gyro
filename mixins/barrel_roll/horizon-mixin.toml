@@ -1,0 +1,73 @@
+[mod]
+id = "barrel_roll"
+version = "1.4.0"
+priority = 100
+
+[compatibility]
+horizon_revision = "ba6344a59cb9e755b730dcf02285fc0d33b97d3c"
+
+[[module]]
+id = "barrel_roll"
+file = "crates/horizon-client/src/lib.rs"
+name = "barrel_roll"
+source = "runtime.rs"
+visibility = "pub"
+
+[[injection]]
+id = "mod-entry"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_mods"
+helper = "list_helper.rs"
+bindings = [
+    { name = "mods", ty = "&mut Vec<crate::game::native_hooks::NativeMod>", value = "&mut *mods" },
+]
+
+[[injection]]
+id = "key-handler"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_key"
+helper = "key_helper.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "key",  ty = "&str", value = "key" },
+    { name = "pressed", ty = "bool", value = "pressed" },
+]
+
+[[injection]]
+id = "frame-handler"
+kind = "HEAD"
+target = "horizon_client::game::native_hooks::Game<'_>::native_frame"
+helper = "frame_helper.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "elapsed", ty = "std::time::Duration", value = "elapsed" },
+]
+
+[[injection]]
+id = "spin-roll"
+kind = "RETURN"
+target = "horizon_client::game::fov::Game<'_>::spinning_matrix"
+helper = "spin_helper.rs"
+bindings = [
+    { name = "game", ty = "&crate::game::Game<'_>", value = "self" },
+    { name = "value", ty = "glam::Mat4", value = "$value" },
+]
+
+[[injection]]
+id = "turn-handler"
+kind = "OVERWRITE"
+target = "horizon_client::game::Game<'_>::apply_mouse_look"
+helper = "turn_helper.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+]
+
+[[injection]]
+id = "model-roll"
+kind = "RETURN"
+target = "horizon_client::mobs::render::base_transform"
+helper = "model_roll_helper.rs"
+bindings = [
+    { name = "m", ty = "&crate::mobs::Mob", value = "m" },
+    { name = "value", ty = "glam::Mat4", value = "$value" },
+]
