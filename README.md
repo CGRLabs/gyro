@@ -1,8 +1,8 @@
-# Barrel-Roll Native Mod — v1.4.0 Documentation
+# Gyro Native Mod — v1.4.0 Documentation
 
 ## What it does
 
-A Horizon **native mod** (`.hnmod`) providing true 6-DOF elytra aerobatics — inspired by the Minecraft Java mod *"Do a Barrel Roll"*:
+A Horizon **native mod** (`.hnmod`) providing true 6-DOF elytra aerobatics:
 
 1. **Mouse X rolls**: while gliding, moving the mouse barrels/banks the camera freely around the look axis (no snap-back, full 360°).
 2. **Mouse Y pitches**: body pitch projected through the current roll, so pulling up while banked carves a turn; passing straight up/down flips into a loop-de-loop.
@@ -33,15 +33,15 @@ The avatar lock follows from that chain: because the roll rides in the projectio
 | `horizon_client::game::Game<'_>::apply_mouse_look` | `OVERWRITE` | `turn_helper.rs` | 6-DOF flight controls while gliding |
 | `horizon_client::mobs::render::base_transform` | `RETURN` | `model_roll_helper.rs` | Cancel the projection roll for the gliding avatar |
 
-Shared state (`ROLL_DEGREES`, `VIEW_YAW`, `VIEW_PITCH`, `LOCK_MOB`, rudder flags) lives in atomics in `runtime.rs`, injected as `horizon_client::barrel_roll`.
+Shared state (`ROLL_DEGREES`, `VIEW_YAW`, `VIEW_PITCH`, `LOCK_MOB`, rudder flags) lives in atomics in `runtime.rs`, injected as `horizon_client::gyro`.
 
 ---
 
 ## Files
 
 ```
-prototypes/barrel-roll/
-├── mixins/barrel_roll/
+prototypes/gyro/
+├── mixins/gyro/
 │   ├── horizon-mixin.toml        # mod id, version, pinned commit, 6 injections + module
 │   ├── runtime.rs                # roll physics, view/lock atomics (unit-tested standalone)
 │   ├── list_helper.rs            # Options > Mods entry
@@ -52,7 +52,7 @@ prototypes/barrel-roll/
 │   └── model_roll_helper.rs      # avatar lock (view-space roll cancellation)
 ├── tools/                        # horizon.py (stage+build), package.py, audit
 └── target/
-    ├── barrel_roll-1.4.0.hnmod   # packaged source bundle
+    ├── gyro-1.4.0.hnmod   # packaged source bundle
     └── mixins/modded/            # staged patched Horizon source (build input)
 ```
 
@@ -78,6 +78,6 @@ Windows notes: `tools/horizon.py` runs with a no-op lock (no `fcntl`) and export
 
 ## Launch & Testing
 
-1. Copy the built `target/horizon-cargo/fast/horizon-client.exe` over `horizon-client-barrelroll.exe` in your play folder.
+1. Copy the built `target/horizon-cargo/fast/horizon-client.exe` over `horizon-client-gyro.exe` in your play folder.
 2. Equip Elytra (`/give <name> minecraft:elytra 1`) and rockets (`/give <name> minecraft:firework_rocket 64`).
 3. Glide: mouse X rolls a full 360°, the world spins around you while your avatar stays pinned to the screen; A/D rudder; stop gliding to level out.

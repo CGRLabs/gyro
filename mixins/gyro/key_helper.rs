@@ -4,9 +4,9 @@ fn on_key(game: &mut crate::game::Game<'_>, key: &str, pressed: bool) {
     let left = key == "key.keyboard.a" || key == "key.a" || key == "key.left";
     let right = key == "key.keyboard.d" || key == "key.d" || key == "key.right";
     if left {
-        horizon_client::barrel_roll::RUDDER_LEFT.store(pressed, std::sync::atomic::Ordering::Relaxed);
+        horizon_client::gyro::RUDDER_LEFT.store(pressed, std::sync::atomic::Ordering::Relaxed);
     }
     if right {
-        horizon_client::barrel_roll::RUDDER_RIGHT.store(pressed, std::sync::atomic::Ordering::Relaxed);
+        horizon_client::gyro::RUDDER_RIGHT.store(pressed, std::sync::atomic::Ordering::Relaxed);
     }
 }

@@ -9,14 +9,14 @@
 // its orbit about the screen centre, leaving the world rolling around it.
 
 fn on_return(m: &crate::mobs::Mob, value: glam::Mat4) -> glam::Mat4 {
-    if !m.extra.fall_flying || m.id != crate::barrel_roll::get_lock_mob() {
+    if !m.extra.fall_flying || m.id != crate::gyro::get_lock_mob() {
         return value;
     }
-    let roll = crate::barrel_roll::get_roll();
+    let roll = crate::gyro::get_roll();
     if roll.abs() <= 0.001 {
         return value;
     }
-    let (yaw, pitch) = crate::barrel_roll::get_view();
+    let (yaw, pitch) = crate::gyro::get_view();
     let view = crate::camera::view_matrix(yaw, pitch);
     view.inverse() * glam::Mat4::from_rotation_z(-roll.to_radians()) * view * value
 }

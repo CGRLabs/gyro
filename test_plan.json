@@ -3577,7 +3577,7 @@
   },
   "injections": [
     {
-      "mod_id": "barrel_roll",
+      "mod_id": "gyro",
       "mod_version": "0.1.0",
       "injection_id": "spin-roll",
       "priority": 100,
@@ -3602,7 +3602,7 @@
       "selector": null,
       "ordinal": null,
       "require": null,
-      "helper_source": "// RETURN hook for Game::spinning_matrix: applies camera roll around Z axis.\nfn on_return(value: glam::Mat4) -> glam::Mat4 {\n    let roll = crate::game::barrel_roll::get_roll();\n    if roll.abs() > 0.0001 {\n        value * glam::Mat4::from_rotation_z(roll.to_radians())\n    } else {\n        value\n    }\n}\n",
+      "helper_source": "// RETURN hook for Game::spinning_matrix: applies camera roll around Z axis.\nfn on_return(value: glam::Mat4) -> glam::Mat4 {\n    let roll = crate::game::gyro::get_roll();\n    if roll.abs() > 0.0001 {\n        value * glam::Mat4::from_rotation_z(roll.to_radians())\n    } else {\n        value\n    }\n}\n",
       "bindings": [
         {
           "name": "value",
@@ -3612,7 +3612,7 @@
       ]
     },
     {
-      "mod_id": "barrel_roll",
+      "mod_id": "gyro",
       "mod_version": "0.1.0",
       "injection_id": "frame-roll",
       "priority": 100,
@@ -3637,7 +3637,7 @@
       "selector": null,
       "ordinal": null,
       "require": null,
-      "helper_source": "// Frame hook: advance the camera roll while active.\nfn on_frame(game: &mut crate::game::Game<'_>, elapsed: std::time::Duration) {\n    let _ = game;\n    let _ = crate::game::barrel_roll::tick(elapsed);\n}\n",
+      "helper_source": "// Frame hook: advance the camera roll while active.\nfn on_frame(game: &mut crate::game::Game<'_>, elapsed: std::time::Duration) {\n    let _ = game;\n    let _ = crate::game::gyro::tick(elapsed);\n}\n",
       "bindings": [
         {
           "name": "game",
@@ -3652,7 +3652,7 @@
       ]
     },
     {
-      "mod_id": "barrel_roll",
+      "mod_id": "gyro",
       "mod_version": "0.1.0",
       "injection_id": "key-b",
       "priority": 100,
@@ -3677,7 +3677,7 @@
       "selector": null,
       "ordinal": null,
       "require": null,
-      "helper_source": "// Key hook: 'B' toggles the barrel roll on/off.\nfn on_key(game: &mut crate::game::Game<'_>, key: &str, pressed: bool) {\n    let _ = game;\n    if key == \"key.b\" && pressed {\n        let active = !crate::game::barrel_roll::ACTIVE.load(std::sync::atomic::Ordering::Relaxed);\n        crate::game::barrel_roll::set_active(active);\n    }\n}\n",
+      "helper_source": "// Key hook: 'B' toggles the barrel roll on/off.\nfn on_key(game: &mut crate::game::Game<'_>, key: &str, pressed: bool) {\n    let _ = game;\n    if key == \"key.b\" && pressed {\n        let active = !crate::game::gyro::ACTIVE.load(std::sync::atomic::Ordering::Relaxed);\n        crate::game::gyro::set_active(active);\n    }\n}\n",
       "bindings": [
         {
           "name": "game",
@@ -3699,11 +3699,11 @@
   ],
   "modules": [
     {
-      "mod_id": "barrel_roll",
+      "mod_id": "gyro",
       "mod_version": "0.1.0",
-      "module_id": "barrel_roll",
+      "module_id": "gyro",
       "file": "crates/horizon-client/src/game.rs",
-      "name": "barrel_roll",
+      "name": "gyro",
       "fingerprint": "789095bc5a2f561fa1828bc25e1888875382b97bdfd7f1580d4a36e546c84d12",
       "source": "// Barrel-roll runtime: spins the camera when activated.\n// This file is both the standalone Cargo library and the injected module.\n\nuse std::sync::atomic::{AtomicBool, AtomicU32, Ordering};\nuse std::time::Duration;\n\n/// Whether the barrel roll is currently active.\npub(crate) static ACTIVE: AtomicBool = AtomicBool::new(false);\n/// Yaw offset applied during the roll, in degrees (bitcast as u32 for Sync).\npub(crate) static YAW_OFFSET: AtomicU32 = AtomicU32::new(0);\n\n/// Toggle the roll on/off. Call from the key hook.\npub fn set_active(active: bool) {\n    ACTIVE.store(active, Ordering::Relaxed);\n    if !active {\n        YAW_OFFSET.store(0, Ordering::Relaxed);\n    }\n}\n\npub fn get_roll() -> f32 {\n    f32::from_bits(YAW_OFFSET.load(Ordering::Relaxed))\n}\n\n/// Advance the roll by `elapsed` seconds. Returns the yaw offset to apply.\npub fn tick(elapsed: Duration) -> f32 {\n    let delta = elapsed.as_secs_f32();\n    if ACTIVE.load(Ordering::Relaxed) {\n        let mut offset = f32::from_bits(YAW_OFFSET.load(Ordering::Relaxed));\n        // Spin ~720 degrees per second (two full barrel rolls per second)\n        offset += delta * 720.0;\n        if offset >= 360.0 {\n            offset -= 360.0;\n        }\n        YAW_OFFSET.store(offset.to_bits(), Ordering::Relaxed);\n        offset\n    } else {\n        0.0\n    }\n}\n\n#[cfg(test)]\nmod tests {\n    use super::*;\n\n    #[test]\n    fn roll_spins_when_active() {\n        set_active(true);\n        let offset = tick(Duration::from_secs_f32(0.5));\n        assert!((offset - 360.0).abs() < 0.01, \"expected 360 deg after 0.5s, got {offset}\");\n        set_active(false);\n        let offset = tick(Duration::from_secs_f32(1.0));\n        assert_eq!(offset, 0.0, \"inactive roll should not accumulate\");\n    }\n}\n"
     }

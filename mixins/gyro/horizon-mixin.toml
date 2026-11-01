@@ -1,5 +1,5 @@
 [mod]
-id = "barrel_roll"
+id = "gyro"
 version = "1.4.0"
 priority = 100
 
@@ -7,9 +7,9 @@ priority = 100
 horizon_revision = "ba6344a59cb9e755b730dcf02285fc0d33b97d3c"
 
 [[module]]
-id = "barrel_roll"
+id = "gyro"
 file = "crates/horizon-client/src/lib.rs"
-name = "barrel_roll"
+name = "gyro"
 source = "runtime.rs"
 visibility = "pub"
 

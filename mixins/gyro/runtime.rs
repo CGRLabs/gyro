@@ -1,5 +1,5 @@
 // Barrel-roll runtime: 360-degree Elytra 6-DOF flight controls.
-// Implements true "Do A Barrel Roll" physics:
+// Implements true "Do A Gyro" physics:
 // - Mouse X controls roll (wings bank and barrel roll freely).
 // - Mouse Y controls pitch (pull up / dive).
 // - Keys A and D control rudder (yaw).

@@ -1,14 +1,14 @@
 [package]
-name = "horizon-barrel-roll"
+name = "horizon-gyro"
 version = "0.1.0"
 edition = "2024"
 rust-version = "1.95"
 license = "MIT"
-description = "Barrel-roll camera spin native mod for Horizon"
+description = "Gyro camera roll native mod for Horizon"
 
 [lib]
 # This exact source is also injected as a same-crate module by horizon-mixins.
-path = "mixins/barrel_roll/runtime.rs"
+path = "mixins/gyro/runtime.rs"
 
 [workspace]
 members = ["tools/audit"]
