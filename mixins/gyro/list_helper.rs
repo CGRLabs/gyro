@@ -1,13 +1,14 @@
-// Register Gyro in Options > Mods
+// Gyro's row in Options > Mods, with its flight controls.
 fn on_mods(mods: &mut Vec<crate::game::native_hooks::NativeMod>) {
+    use horizon_client::gyro as g;
     mods.push(crate::game::native_hooks::NativeMod {
-        id: "gyro".into(),
-        title: "Gyro 1.4.0".into(),
-        description: "True flight simulator 6-DOF elytra aerobatics: avatar locked to the camera roll, Mouse X rolls, Mouse Y pitches, A/D yaws.".into(),
+        id: g::ID.into(),
+        title: format!("Gyro {}", g::VERSION),
+        description: g::DESCRIPTION.into(),
         keys: vec![
-            ["roll".into(), "Roll (Mouse X)".into(), "key.mouse.x".into()],
-            ["pitch".into(), "Pitch (Mouse Y)".into(), "key.mouse.y".into()],
-            ["rudder".into(), "Rudder Yaw (A/D)".into(), "key.keyboard.a".into()],
+            ["roll".into(), "Roll (move the mouse left and right)".into(), "key.mouse.x".into()],
+            ["pitch".into(), "Pitch (move the mouse up and down)".into(), "key.mouse.y".into()],
+            ["rudder".into(), "Rudder (steer with A and D)".into(), "key.keyboard.a".into()],
         ],
     });
 }

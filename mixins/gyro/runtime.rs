@@ -1,12 +1,16 @@
-// Barrel-roll runtime: 360-degree Elytra 6-DOF flight controls.
-// Implements true "Do A Gyro" physics:
-// - Mouse X controls roll (wings bank and barrel roll freely).
-// - Mouse Y controls pitch (pull up / dive).
-// - Keys A and D control rudder (yaw).
-// - No artificial snap-back while flying.
+// Gyro runtime: elytra flight on the mouse, in any direction.
+// While gliding, mouse X rolls the view around the look axis, mouse Y pitches
+// it through that roll (so a banked pull-up carves a turn), and A / D work the
+// rudder. Rolling ends the moment you stop gliding: the view levels out.
 
 use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
 use std::time::Duration;
+
+/// The mod's row in Options > Mods. `version` here and in horizon-mixin.toml are kept the same.
+pub const ID: &str = "gyro";
+pub const VERSION: &str = "1.4.1";
+pub const DESCRIPTION: &str =
+    "Fly an elytra like an aircraft: while you glide, the mouse rolls and pitches the view instead of only turning it, A and D work the rudder, and you stay upright on screen while the world spins around you.";
 
 /// Whether rudder left (A key) is held.
 pub static RUDDER_LEFT: AtomicBool = AtomicBool::new(false);

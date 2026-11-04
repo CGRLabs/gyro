@@ -1,4 +1,6 @@
 {
+  "game": "26.3",
+  "hooks": 3,
   "horizon_revision": "ba6344a59cb9e755b730dcf02285fc0d33b97d3c",
   "source_sha256": {
     "crates/horizon-client/src/game.rs": "043c7853552104e8250b89987f0ff5de86cbcec0abece1d319c268e66644015f"
