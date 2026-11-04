@@ -32,11 +32,11 @@ Native mods are unsandboxed code that runs with your rights, and this one is not
 registry — the launcher will say so in red before it builds. The bundle is eight small `.rs` files under
 `mixins/gyro/`; read them first.
 
-**Without the launcher:** `horizon-client-gyro.exe` in
-[the latest release](https://github.com/CGRLabs/gyro/releases) is a Horizon
+**Without the launcher:** `horizon-client-gyro.exe` ships with
+[release v1.4.0](https://github.com/CGRLabs/gyro/releases/tag/v1.4.0): a Horizon
 client with Gyro already compiled in. Drop it into a prepared Horizon 26.3 folder (one where
 `horizon-prepare` has run) and start it in place of `horizon-client`. It is built for commit `ba6344a5`, so
-it will not match a newer install.
+it will not match a newer install — for newer Nightlies, use the launcher build above.
 
 Either way: `/give @s minecraft:elytra 1`, jump off something high, and hold Space to glide.
 
