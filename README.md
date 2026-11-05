@@ -1,5 +1,7 @@
 # Gyro
 
+![Gyro mod icon](https://weaigubwhdajcehreyau.supabase.co/storage/v1/object/public/icons/gyro.png)
+
 **Fly an elytra like an aircraft.** Put on elytra, jump, and the mouse stops being a head-turner: moving it
 left and right rolls you around the direction you are looking, moving it up and down pulls you up or pushes
 you down — and because that pull goes through your bank, a wing-down tilt turns you into a carve. Push the
