@@ -33,7 +33,7 @@ functions, though: when Horizon moves one — as the 2026-11-10 Nightly moved `a
 `game/pointer_capture` — the bundle needs the new path, and we publish it as a new version.
 
 Native mods are unsandboxed code that runs with your rights, and this one is not reviewed by the Horizon
-registry — the launcher will say so in red before it builds. The bundle is eight small `.rs` files under
+registry - the launcher will say so in red before it builds. The bundle is seven small `.rs` files under
 `mixins/gyro/`; read them first.
 
 **Without the launcher:** `horizon-client-gyro.exe` ships with
