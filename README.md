@@ -28,17 +28,20 @@ Nothing to bind and nothing to configure: one row in **Options > Mods** tells yo
 `https://github.com/CGRLabs/gyro`, then Settings → Game → **Native mods (experimental)** → **Build**. The
 launcher downloads its own Rust and compiles the mod into a game of your own; the first build takes 20 to 30
 minutes, later ones are incremental. Its `.hnmod` asks for hook points v3, so it builds on any Horizon that
-has them rather than one exact commit — a new Nightly does not strand it.
+has them rather than one exact commit. The three camera and mouse hooks sit on Horizon's own private
+functions, though: when Horizon moves one — as the 2026-11-10 Nightly moved `apply_mouse_look` into
+`game/pointer_capture` — the bundle needs the new path, and we publish it as a new version.
 
 Native mods are unsandboxed code that runs with your rights, and this one is not reviewed by the Horizon
 registry — the launcher will say so in red before it builds. The bundle is eight small `.rs` files under
 `mixins/gyro/`; read them first.
 
 **Without the launcher:** `horizon-client-gyro.exe` ships with
-[release v1.4.0](https://github.com/CGRLabs/gyro/releases/tag/v1.4.0): a Horizon
+[release v1.4.2](https://github.com/CGRLabs/gyro/releases/tag/v1.4.2): a Horizon
 client with Gyro already compiled in. Drop it into a prepared Horizon 26.3 folder (one where
-`horizon-prepare` has run) and start it in place of `horizon-client`. It is built for commit `ba6344a5`, so
-it will not match a newer install — for newer Nightlies, use the launcher build above.
+`horizon-prepare` has run) and start it in place of `horizon-client`. It is built for commit `8933e8c2`
+(the 2026-11-10 Nightly), so it will not match an older install — for another Nightly, use the launcher
+build above.
 
 Either way: `/give @s minecraft:elytra 1`, jump off something high, and hold Space to glide.
 
@@ -80,11 +83,12 @@ players' avatars are left alone.
 | `native_hooks::Game::native_key` | `HEAD` | `key_helper.rs` — rudder key state |
 | `native_hooks::Game::native_frame` | `HEAD` | `frame_helper.rs` — level-out tick, rudder yaw |
 | `game::fov::Game::spinning_matrix` | `RETURN` | `spin_helper.rs` — camera roll, render view capture |
-| `game::Game::apply_mouse_look` | `OVERWRITE` | `turn_helper.rs` — mouse to roll and pitch |
+| `game::pointer_capture::Game::apply_mouse_look` | `OVERWRITE` | `turn_helper.rs` — mouse to roll and pitch |
 | `mobs::render::base_transform` | `RETURN` | `model_roll_helper.rs` — the avatar lock |
 
-Roll physics and the atomics behind it are in `runtime.rs`, injected as `horizon_client::gyro`, and it is
-also this crate's library so the numbers can be tested on their own.
+Roll physics and the atomics behind it are in `runtime.rs`, injected as the `gyro` module of
+`crates/horizon-client/src/client_lib.rs` (the `horizon-client-lib` crate the game is compiled from since
+Nightly 2026-11-10), and it is also this crate's library so the numbers can be tested on their own.
 
 ### Files
 

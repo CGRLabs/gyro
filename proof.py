@@ -167,7 +167,7 @@ def proof(g):
 
     g.play()
     g.run("command", "item replace entity @s armor.chest with minecraft:elytra 1")
-    g.run("command", "tp @s 0 160 0 0 0")
+    g.run("command", "tp @s 0 320 0 0 0")
     time.sleep(1.5)
     g.run("key", "space", "down")
     time.sleep(1.0)
@@ -179,7 +179,9 @@ def proof(g):
     level = g.shot("1-gliding-level")
     g.run("mouse-move", "200", "0")
     time.sleep(0.7)
-    _, yaw_rolled, _ = flight(g.run("state"))
+    glide_rolled, yaw_rolled, _ = flight(g.run("state"))
+    out["gliding_after_roll"] = glide_rolled
+    assert glide_rolled, f"gliding ended during the roll: {out}"
     rolled = g.shot("2-gliding-rolled")
     out["yaw_drift_while_rolling"] = round(turned_degrees(yaw, yaw_rolled), 2)
     out["frame_difference_when_rolled"] = round(difference(level, rolled), 2)
@@ -187,10 +189,13 @@ def proof(g):
     assert out["frame_difference_when_rolled"] > 3.0, f"the view did not roll: {out}"
 
     # 3. Banked, a vertical mouse move carves: it turns the yaw as well as pitching.
-    _, yaw_before, pitch_before = flight(g.run("state"))
+    glide_level, yaw_before, pitch_before = flight(g.run("state"))
+    out["gliding_before_carve"] = glide_level
+    assert glide_level, f"gliding ended before the carve, so the roll had levelled out: {out}"
     g.run("mouse-move", "0", "300")
     time.sleep(0.7)
-    _, yaw_banked, pitch_banked = flight(g.run("state"))
+    glide_banked, yaw_banked, pitch_banked = flight(g.run("state"))
+    out["gliding_after_carve"] = glide_banked
     out["yaw_turned_while_banked"] = round(turned_degrees(yaw_before, yaw_banked), 2)
     out["pitch_moved_while_banked"] = round(abs(pitch_banked - pitch_before), 2)
     assert out["pitch_moved_while_banked"] > 3, f"the elevator did nothing: {out}"

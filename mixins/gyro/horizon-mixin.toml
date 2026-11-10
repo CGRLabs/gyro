@@ -1,16 +1,16 @@
 [mod]
 id = "gyro"
-version = "1.4.1"
+version = "1.4.2"
 priority = 100
 
 # The commit it was tested on. It uses only the native hook points (hooks 3 in
 # compatibility.json): the launcher builds it on any Horizon that has them.
 [compatibility]
-horizon_revision = "ba6344a59cb9e755b730dcf02285fc0d33b97d3c"
+horizon_revision = "8933e8c2d81bef1549a63dc1c8341ca46fe3cffa"
 
 [[module]]
 id = "gyro"
-file = "crates/horizon-client/src/lib.rs"
+file = "crates/horizon-client/src/client_lib.rs"
 name = "gyro"
 source = "runtime.rs"
 visibility = "pub"
@@ -58,7 +58,7 @@ bindings = [
 [[injection]]
 id = "turn-handler"
 kind = "OVERWRITE"
-target = "horizon_client::game::Game<'_>::apply_mouse_look"
+target = "horizon_client::game::pointer_capture::Game<'_>::apply_mouse_look"
 helper = "turn_helper.rs"
 bindings = [
     { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },

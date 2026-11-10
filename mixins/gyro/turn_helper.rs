@@ -14,7 +14,9 @@ fn on_mouse_look(game: &mut crate::game::Game<'_>) {
         crate::game::Screen::Playing => true,
         _ => false,
     };
-    let grabbed = pointer && is_playing && game.player.is_some();
+    let grabbed = pointer
+        && is_playing
+        && (game.player.is_some() || game.studio.flying());
     let active = game.focused || game.agent_pointer;
     if let Some((xo, yo)) = game
         .mouse

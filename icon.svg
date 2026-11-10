@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Gyro native mod">
+  <rect x="1" y="1" width="30" height="30" rx="2" fill="#1f1c19"/>
+  <rect x="1.75" y="1.75" width="28.5" height="28.5" rx="2" fill="none" stroke="#ffffff" stroke-opacity=".16" stroke-width="1.5"/>
+  <path d="m11.4 12.4 9.2-5.3" fill="none" stroke="#f0ebe6" stroke-width="2.6" stroke-linecap="round"/>
+  <circle cx="21.6" cy="6.4" r="2.1" fill="#e8611a"/>
+  <path d="M10.5 20a5.5 5.5 0 0 1 11 0" fill="none" stroke="#e8611a" stroke-width="2.4" stroke-linecap="round"/>
+  <path d="M6.5 20h19" stroke="#ff9a5f" stroke-width="2.4" stroke-linecap="round"/>
+</svg>
