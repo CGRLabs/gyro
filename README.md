@@ -37,10 +37,10 @@ registry - the launcher will say so in red before it builds. The bundle is seven
 `mixins/gyro/`; read them first.
 
 **Without the launcher:** `horizon-client-gyro.exe` ships with
-[release v1.4.2](https://github.com/CGRLabs/gyro/releases/tag/v1.4.2): a Horizon
+[release v1.4.3](https://github.com/CGRLabs/gyro/releases/tag/v1.4.3): a Horizon
 client with Gyro already compiled in. Drop it into a prepared Horizon 26.3 folder (one where
-`horizon-prepare` has run) and start it in place of `horizon-client`. It is built for commit `8933e8c2`
-(the 2026-11-10 Nightly), so it will not match an older install — for another Nightly, use the launcher
+`horizon-prepare` has run) and start it in place of `horizon-client`. It is built for commit `e14b35ce`
+(the 2026-11-11 Nightly), so it will not match an older install — for another Nightly, use the launcher
 build above.
 
 Either way: `/give @s minecraft:elytra 1`, jump off something high, and hold Space to glide.

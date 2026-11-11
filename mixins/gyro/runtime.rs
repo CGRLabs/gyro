@@ -8,7 +8,7 @@ use std::time::Duration;
 
 /// The mod's row in Options > Mods. `version` here and in horizon-mixin.toml are kept the same.
 pub const ID: &str = "gyro";
-pub const VERSION: &str = "1.4.2";
+pub const VERSION: &str = "1.4.3";
 pub const DESCRIPTION: &str =
     "Fly an elytra like an aircraft: while you glide, the mouse rolls and pitches the view instead of only turning it, A and D work the rudder, and you stay upright on screen while the world spins around you.";
 

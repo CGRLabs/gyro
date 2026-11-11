@@ -1,12 +1,12 @@
 [mod]
 id = "gyro"
-version = "1.4.2"
+version = "1.4.3"
 priority = 100
 
 # The commit it was tested on. It uses only the native hook points (hooks 3 in
 # compatibility.json): the launcher builds it on any Horizon that has them.
 [compatibility]
-horizon_revision = "8933e8c2d81bef1549a63dc1c8341ca46fe3cffa"
+horizon_revision = "e14b35cecb688809822706e033710ad7209d1155"
 
 [[module]]
 id = "gyro"
