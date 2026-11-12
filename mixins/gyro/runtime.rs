@@ -1,22 +1,19 @@
 // Gyro runtime: elytra flight on the mouse, in any direction.
-// While gliding, mouse X rolls the view around the look axis, mouse Y pitches
-// it through that roll (so a banked pull-up carves a turn), and A / D work the
-// rudder. Rolling ends the moment you stop gliding: the view levels out.
+//
+// While gliding, mouse X rolls the view around the look axis, and mouse Y
+// pitches it through that roll — so a banked pull-up carves a turn, and the
+// bank is the only steering there is. There is no rudder: the camera and the
+// mouse are the whole of it. Rolling ends the moment you stop gliding: the
+// view levels out.
 
-use std::sync::atomic::{AtomicBool, AtomicU32, Ordering};
+use std::sync::atomic::{AtomicU32, Ordering};
 use std::time::Duration;
 
 /// The mod's row in Options > Mods. `version` here and in horizon-mixin.toml are kept the same.
 pub const ID: &str = "gyro";
-pub const VERSION: &str = "1.4.3";
+pub const VERSION: &str = "1.5.0";
 pub const DESCRIPTION: &str =
-    "Fly an elytra like an aircraft: while you glide, the mouse rolls and pitches the view instead of only turning it, A and D work the rudder, and you stay upright on screen while the world spins around you.";
-
-/// Whether rudder left (A key) is held.
-pub static RUDDER_LEFT: AtomicBool = AtomicBool::new(false);
-
-/// Whether rudder right (D key) is held.
-pub static RUDDER_RIGHT: AtomicBool = AtomicBool::new(false);
+    "Fly an elytra like an aircraft: while you glide, the mouse rolls and pitches the view instead of only turning it, and you stay upright on screen while the world spins around you.";
 
 /// Current camera roll angle in degrees [0, 360).
 pub static ROLL_DEGREES: AtomicU32 = AtomicU32::new(0);
@@ -70,6 +67,9 @@ pub fn get_lock_mob() -> u32 {
 /// - `xo` directly adds to roll (barrel rolling / banking with the mouse).
 /// - `yo` pitches the aircraft in body coordinates.
 /// - Returns `(pitch_delta, yaw_delta)` transformed to world coordinates based on current roll.
+///
+/// With no rudder, the bank itself is the steering: at zero roll a pull-up is
+/// a pure climb, and as the roll grows the same pull turns into a carve.
 pub fn calculate_flight_turn(xo: f64, yo: f64, current_roll: f32) -> (f32, f32, f32) {
     // Mouse X directly rotates the roll axis (0.15 deg per unit)
     let roll_delta = (xo as f32) * 0.15;
@@ -92,7 +92,8 @@ pub fn calculate_flight_turn(xo: f64, yo: f64, current_roll: f32) -> (f32, f32, 
 }
 
 /// Advance flight state per frame.
-/// While gliding: does NOT auto-snap roll; applies rudder turn if A/D are pressed.
+/// While gliding: the roll stays where the mouse left it; there is no
+/// rudder and nothing snaps it back.
 /// When landed on the ground: smoothly returns roll back to 0.
 pub fn tick(gliding: bool, elapsed: Duration) -> f32 {
     let dt = elapsed.as_secs_f32().min(0.5);
@@ -109,7 +110,7 @@ pub fn tick(gliding: bool, elapsed: Duration) -> f32 {
             let speed = 270.0 * dt;
             if norm.abs() <= speed {
                 current_roll = 0.0;
-            } else if norm > 0.0 {
+            } else if current_roll > 0.0 {
                 current_roll = norm - speed;
             } else {
                 current_roll = norm + speed;
@@ -122,19 +123,6 @@ pub fn tick(gliding: bool, elapsed: Duration) -> f32 {
     }
 
     current_roll
-}
-
-/// Calculate rudder yaw delta from A/D keys (in degrees per frame)
-pub fn rudder_yaw_delta(elapsed: Duration) -> f32 {
-    let dt = elapsed.as_secs_f32().min(0.5);
-    let rudder_speed = 90.0 * dt; // 90 degrees per second
-    let left = RUDDER_LEFT.load(Ordering::Relaxed);
-    let right = RUDDER_RIGHT.load(Ordering::Relaxed);
-    match (left, right) {
-        (true, false) => -rudder_speed,
-        (false, true) => rudder_speed,
-        _ => 0.0,
-    }
 }
 
 #[cfg(test)]
@@ -155,6 +143,14 @@ mod tests {
         let (p_delta, y_delta, _) = calculate_flight_turn(0.0, -100.0, 90.0);
         assert!(p_delta.abs() < 1e-3, "world pitch delta should be near 0");
         assert!(y_delta > 0.0, "should turn yaw right into the bank");
+    }
+
+    #[test]
+    fn test_level_pitch_does_not_turn() {
+        // With no rudder, a level pull-up is a pure climb: no yaw at all.
+        let (p_delta, y_delta, _) = calculate_flight_turn(0.0, -100.0, 0.0);
+        assert!(p_delta < 0.0, "a level pull-up should pitch up");
+        assert!(y_delta.abs() < 1e-3, "a level pull-up must not yaw");
     }
 
     #[test]

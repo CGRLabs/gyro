@@ -162,7 +162,7 @@ def proof(g):
     labels = g.labels()
     row = next((l for l in labels if isinstance(l, str) and l.startswith("Gyro")), None)
     out["mods_row"] = row
-    assert row and "1.4" in row, f"no Gyro row in Options > Mods: {labels}"
+    assert row and "1.5" in row, f"no Gyro row in Options > Mods: {labels}"
     g.shot("0-options-mods")
 
     g.play()
@@ -213,7 +213,22 @@ def proof(g):
     out["pitch_moved_while_level"] = round(abs(pitch_level - pitch_before), 2)
     assert out["pitch_moved_while_level"] > 3 and out["yaw_turned_while_level"] < 1, out
 
-    # 5. On the ground the mouse is plain look again, and the roll has levelled out.
+    # 5. There is no rudder: A and D do nothing to the camera.
+    glide_level, yaw_before, pitch_before = flight(g.run("state"))
+    g.run("key", "key.keyboard.a", "down")
+    time.sleep(0.8)
+    g.run("key", "key.keyboard.a", "up")
+    g.run("key", "key.keyboard.d", "down")
+    time.sleep(0.8)
+    g.run("key", "key.keyboard.d", "up")
+    time.sleep(0.3)
+    _, yaw_keys, pitch_keys = flight(g.run("state"))
+    out["yaw_turned_by_a_and_d"] = round(turned_degrees(yaw_before, yaw_keys), 2)
+    out["pitch_moved_by_a_and_d"] = round(abs(pitch_keys - pitch_before), 2)
+    assert out["yaw_turned_by_a_and_d"] < 1.0, f"A and D still steered: {out}"
+    assert out["pitch_moved_by_a_and_d"] < 1.0, f"A and D still pitched: {out}"
+
+    # 6. On the ground the mouse is plain look again, and the roll has levelled out.
     g.run("key", "space", "up")
     g.run("command", "tp @s 0 5 0")
     time.sleep(2.0)

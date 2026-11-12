@@ -88,7 +88,7 @@ def mixin_stage(horizon, stages):
     subprocess.run(["git", "-C", str(MIXINS), "diff", "--quiet", "HEAD", "--", "Cargo.toml", "Cargo.lock", "crates"], check=True)
     original, _ = stage(horizon, stages / "original")
     subprocess.run(["cargo", "build", "--locked", "--offline", "--target-dir", str(MIXINS / "target"), "-p", "horizon-mixins-cli"], cwd=MIXINS, check=True, stdout=sys.stderr)
-    cli = MIXINS / "target/debug/horizon-mixins"
+    cli = MIXINS / ("target/debug/horizon-mixins.exe" if os.name == "nt" else "target/debug/horizon-mixins")
     output = stages / "modded"
     plan = stages / "plan.json"
     base = ["--workspace", str(original), "--mods", str(ROOT / "mixins")]
@@ -130,7 +130,14 @@ def main():
             if args.action == "build":
                 command.extend(["--profile", "fast"])
             if args.action == "test":
-                command.extend(["game::gyro::tests", "--", "--nocapture"])
+                # The tests live in `horizon-client-lib` (the crate whose
+                # `client_lib.rs` the bundle is injected into), so test that
+                # crate's library, not the binary's.
+                i = command.index("--bin")
+                del command[i:i + 2]
+                command[command.index("-p") + 1] = "horizon-client-lib"
+                command.append("--lib")
+                command.extend(["gyro::tests", "--", "--nocapture"])
             with lock(target.parent / (target.name + ".mod-template.lock")):
                 run_start = time.monotonic()
                 result = subprocess.run(command, cwd=output, capture_output=True, text=True)

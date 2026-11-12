@@ -1,6 +1,6 @@
 [mod]
 id = "gyro"
-version = "1.4.3"
+version = "1.5.0"
 priority = 100
 
 # The commit it was tested on. It uses only the native hook points (hooks 3 in
@@ -22,17 +22,6 @@ target = "horizon_client::game::native_hooks::Game<'_>::native_mods"
 helper = "list_helper.rs"
 bindings = [
     { name = "mods", ty = "&mut Vec<crate::game::native_hooks::NativeMod>", value = "&mut *mods" },
-]
-
-[[injection]]
-id = "key-handler"
-kind = "HEAD"
-target = "horizon_client::game::native_hooks::Game<'_>::native_key"
-helper = "key_helper.rs"
-bindings = [
-    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
-    { name = "key",  ty = "&str", value = "key" },
-    { name = "pressed", ty = "bool", value = "pressed" },
 ]
 
 [[injection]]

@@ -5,9 +5,9 @@
 **Fly an elytra like an aircraft.** Put on elytra, jump, and the mouse stops being a head-turner: moving it
 left and right rolls you around the direction you are looking, moving it up and down pulls you up or pushes
 you down — and because that pull goes through your bank, a wing-down tilt turns you into a carve. Push the
-nose past straight up and you loop. `A` and `D` are the rudder. In third person you stay upright on screen
-while the world spins around you. The moment you stop gliding, the view levels out and the mouse is an
-ordinary camera again.
+nose past straight up and you loop. **The mouse is the whole of it** — there is no rudder, no keyboard, no
+separate steering. In third person you stay upright on screen while the world spins around you. The moment you
+stop gliding, the view levels out and the mouse is an ordinary camera again.
 
 Written for the feel of the Minecraft Java mod *Do a Barrel Roll*, on Horizon's native hook points.
 
@@ -17,8 +17,9 @@ Written for the feel of the Minecraft Java mod *Do a Barrel Roll*, on Horizon's 
 |---|---|
 | Mouse left / right | Roll: bank and barrel roll, a full 360°, no snap-back |
 | Mouse up / down | Elevator: pitch through your current roll, so a banked pull-up carves |
-| `A` / `D` | Rudder yaw |
 | Anything else | Vanilla — walking, flying and swimming controls are untouched |
+
+The bank is the steering: level, a pull-up is a pure climb; banked, the same pull-up carves you around.
 
 Nothing to bind and nothing to configure: one row in **Options > Mods** tells you it is installed.
 
