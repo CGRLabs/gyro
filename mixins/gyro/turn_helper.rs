@@ -1,8 +1,7 @@
 // OVERWRITE hook for Game::apply_mouse_look:
-// True "Do A Gyro" flight controls:
 // - While flying with Elytra:
-//   Mouse X directly controls roll (barrel roll & bank freely).
-//   Mouse Y controls elevator pitch.
+//   Mouse X turns you (yaw), so you fly where you look.
+//   Mouse Y pitches you; through the bank, a pull-up carves a turn.
 // - While on ground / walking:
 //   Standard vanilla mouse look (yaw & pitch).
 
@@ -34,9 +33,8 @@ fn on_mouse_look(game: &mut crate::game::Game<'_>) {
 
         if gliding {
             let cur_roll = horizon_client::gyro::get_roll();
-            let (pitch_delta, yaw_delta, new_roll) =
+            let (pitch_delta, yaw_delta) =
                 horizon_client::gyro::calculate_flight_turn(xo, yo, cur_roll);
-            horizon_client::gyro::set_roll(new_roll);
 
             let mut new_pitch = game.pitch + pitch_delta;
             let mut new_yaw = game.yaw + yaw_delta;
@@ -46,13 +44,11 @@ fn on_mouse_look(game: &mut crate::game::Game<'_>) {
             if new_pitch > 90.0 {
                 new_pitch = 180.0 - new_pitch;
                 new_yaw = (new_yaw + 180.0).rem_euclid(360.0);
-                let r = horizon_client::gyro::get_roll();
-                horizon_client::gyro::set_roll((r + 180.0).rem_euclid(360.0));
+                horizon_client::gyro::flip_roll();
             } else if new_pitch < -90.0 {
                 new_pitch = -180.0 - new_pitch;
                 new_yaw = (new_yaw + 180.0).rem_euclid(360.0);
-                let r = horizon_client::gyro::get_roll();
-                horizon_client::gyro::set_roll((r + 180.0).rem_euclid(360.0));
+                horizon_client::gyro::flip_roll();
             }
 
             new_pitch = new_pitch.clamp(-90.0, 90.0);

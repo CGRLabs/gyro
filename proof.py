@@ -162,7 +162,7 @@ def proof(g):
     labels = g.labels()
     row = next((l for l in labels if isinstance(l, str) and l.startswith("Gyro")), None)
     out["mods_row"] = row
-    assert row and "1.5" in row, f"no Gyro row in Options > Mods: {labels}"
+    assert row and "1.6" in row, f"no Gyro row in Options > Mods: {labels}"
     g.shot("0-options-mods")
 
     g.play()
@@ -175,20 +175,26 @@ def proof(g):
     out["gliding"] = gliding
     assert gliding, f"the player is not gliding: {g.run('state')}"
 
-    # 2. Mouse X while gliding rolls the world instead of turning the player.
+    # 2. Mouse X while gliding turns you, so you fly where you look.
     level = g.shot("1-gliding-level")
+    yaw_before = flight(g.run("state"))[1]
     g.run("mouse-move", "200", "0")
     time.sleep(0.7)
     glide_rolled, yaw_rolled, _ = flight(g.run("state"))
-    out["gliding_after_roll"] = glide_rolled
-    assert glide_rolled, f"gliding ended during the roll: {out}"
-    rolled = g.shot("2-gliding-rolled")
-    out["yaw_drift_while_rolling"] = round(turned_degrees(yaw, yaw_rolled), 2)
-    out["frame_difference_when_rolled"] = round(difference(level, rolled), 2)
-    assert out["yaw_drift_while_rolling"] < 1.0, f"mouse X turned the player: {out}"
-    assert out["frame_difference_when_rolled"] > 3.0, f"the view did not roll: {out}"
+    out["gliding_after_turn"] = glide_rolled
+    assert glide_rolled, f"gliding ended during the turn: {out}"
+    rolled = g.shot("2-gliding-turned")
+    out["yaw_turned_by_mouse_x"] = round(turned_degrees(yaw_before, yaw_rolled), 2)
+    out["frame_difference_when_turned"] = round(difference(level, rolled), 2)
+    assert out["yaw_turned_by_mouse_x"] > 5, f"mouse X did not turn you: {out}"
+    assert out["frame_difference_when_turned"] > 3.0, f"the view did not change: {out}"
 
     # 3. Banked, a vertical mouse move carves: it turns the yaw as well as pitching.
+    #    Hold the turn for a moment so the world banks over first.
+    for _ in range(6):
+        g.run("mouse-move", "120", "0")
+        time.sleep(0.08)
+    time.sleep(0.3)
     glide_level, yaw_before, pitch_before = flight(g.run("state"))
     out["gliding_before_carve"] = glide_level
     assert glide_level, f"gliding ended before the carve, so the roll had levelled out: {out}"
@@ -201,9 +207,10 @@ def proof(g):
     assert out["pitch_moved_while_banked"] > 3, f"the elevator did nothing: {out}"
     assert out["yaw_turned_while_banked"] > 3, f"a banked pull-up did not carve: {out}"
 
-    # 4. Unrolled, the same vertical move is plain pitch with no turn.
+    # 4. Level, the same vertical move is plain pitch with no turn. Stop turning
+    #    and let the world level out first.
     g.run("mouse-move", "-200", "0")
-    time.sleep(0.7)
+    time.sleep(2.5)
     g.shot("3-gliding-unrolled")
     _, yaw_before, pitch_before = flight(g.run("state"))
     g.run("mouse-move", "0", "200")

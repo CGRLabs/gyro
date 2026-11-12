@@ -1,6 +1,6 @@
 [mod]
 id = "gyro"
-version = "1.5.0"
+version = "1.6.0"
 priority = 100
 
 # The commit it was tested on. It uses only the native hook points (hooks 3 in

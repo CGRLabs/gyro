@@ -3,11 +3,12 @@
 ![Gyro mod icon](https://weaigubwhdajcehreyau.supabase.co/storage/v1/object/public/icons/gyro.png)
 
 **Fly an elytra like an aircraft.** Put on elytra, jump, and the mouse stops being a head-turner: moving it
-left and right rolls you around the direction you are looking, moving it up and down pulls you up or pushes
-you down — and because that pull goes through your bank, a wing-down tilt turns you into a carve. Push the
-nose past straight up and you loop. **The mouse is the whole of it** — there is no rudder, no keyboard, no
-separate steering. In third person you stay upright on screen while the world spins around you. The moment you
-stop gliding, the view levels out and the mouse is an ordinary camera again.
+left and right **turns you**, so you fly where you look, and the world banks into the turn around you;
+moving it up and down pulls you up or pushes you down — and because that pull goes through your bank, a
+wing-down tilt turns you into a carve. Push the nose past straight up and you loop. **The mouse is the
+whole of it** — no rudder, no keyboard, no separate steering. In third person you stay upright on
+screen while the world spins around you. The moment you stop gliding, the view levels out and the mouse
+is an ordinary camera again.
 
 Written for the feel of the Minecraft Java mod *Do a Barrel Roll*, on Horizon's native hook points.
 
@@ -15,11 +16,13 @@ Written for the feel of the Minecraft Java mod *Do a Barrel Roll*, on Horizon's 
 
 | While gliding | What it does |
 |---|---|
-| Mouse left / right | Roll: bank and barrel roll, a full 360°, no snap-back |
-| Mouse up / down | Elevator: pitch through your current roll, so a banked pull-up carves |
+| Mouse left / right | **Turn**: you fly where you look, and the world banks into the turn |
+| Mouse up / down | Pitch: climb and dive; through the bank, a pull-up carves |
 | Anything else | Vanilla — walking, flying and swimming controls are untouched |
 
-The bank is the steering: level, a pull-up is a pure climb; banked, the same pull-up carves you around.
+**The bank is the barrel roll.** Keep turning in one direction and the world keeps leaning over,
+further and further, until you have rolled right around and come back to level — a full barrel roll,
+done with nothing but the mouse.
 
 Nothing to bind and nothing to configure: one row in **Options > Mods** tells you it is installed.
 
@@ -66,9 +69,14 @@ Camera roll rides in the level's render pose:
 clip = projection · (bob · spin) · view_matrix(yaw, pitch) · model_matrix
 ```
 
-`Game::spinning_matrix` gets multiplied by a Z rotation of the current roll, so terrain, sky, entities and
-frustum culling all turn around the screen centre, while `game.yaw` and `game.pitch` stay clean — mouse aim
-is not repurposed, only reinterpreted while gliding.
+`Game::spinning_matrix` gets multiplied by a Z rotation of the current bank, so terrain, sky, entities and
+frustum culling all turn around the screen centre, while `game.yaw` and `game.pitch` stay clean — the
+elytra still flies along the look vector, exactly as in vanilla, so **you go where you look**.
+
+The bank is measured, not set: every frame the frame hook compares the heading with the last frame's and
+adds the difference, so the world leans into the turn by exactly the amount you turned. Keep turning and
+the lean keeps going, further and further, until the world has rolled right around — the barrel roll,
+with nothing but the mouse. Stop turning and it levels out again.
 
 Because that roll is in the projection, every model on screen tilts with the world, the player's own avatar
 included. To pin the gliding avatar to the camera instead, `mobs::render::base_transform` is
@@ -81,10 +89,9 @@ players' avatars are left alone.
 | Injection target | Kind | Helper |
 |---|---|---|
 | `native_hooks::Game::native_mods` | `HEAD` | `list_helper.rs` — the row in Options > Mods |
-| `native_hooks::Game::native_key` | `HEAD` | `key_helper.rs` — rudder key state |
-| `native_hooks::Game::native_frame` | `HEAD` | `frame_helper.rs` — level-out tick, rudder yaw |
-| `game::fov::Game::spinning_matrix` | `RETURN` | `spin_helper.rs` — camera roll, render view capture |
-| `game::pointer_capture::Game::apply_mouse_look` | `OVERWRITE` | `turn_helper.rs` — mouse to roll and pitch |
+| `native_hooks::Game::native_frame` | `HEAD` | `frame_helper.rs` — the world banks into the turn |
+| `game::fov::Game::spinning_matrix` | `RETURN` | `spin_helper.rs` — the camera bank, render view capture |
+| `game::pointer_capture::Game::apply_mouse_look` | `OVERWRITE` | `turn_helper.rs` — the mouse turns and pitches you |
 | `mobs::render::base_transform` | `RETURN` | `model_roll_helper.rs` — the avatar lock |
 
 Roll physics and the atomics behind it are in `runtime.rs`, injected as the `gyro` module of
