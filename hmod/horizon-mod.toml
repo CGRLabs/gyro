@@ -1,0 +1,48 @@
+id = "gyro"
+name = "Gyro"
+version = "1.9.0"
+description = "Look where you want to go: while gliding, the mouse steers you like walking, and the world leans gently into turns. Settings let you invert the Y axis and tune the lean."
+authors = ["CGRLabs"]
+api = "0.2"
+side = "client"
+capabilities = ["registries"]
+
+[native]
+game = "26.3"
+horizon = "0b14f8acfd97fa2c750e42795249dcc981178ca4"
+mixins = "e59da9094f0c2fdda6c627fe9eff22dec6a906f0"
+
+# One frame: advance the bank from the local player's turn rate.
+[[native.mixin]]
+id = "frame-handler"
+target = "horizon_client::game::Game<'_>::render_and_flip"
+kind = "HEAD"
+helper = "src/mixins/frame.rs"
+bindings = [
+    { name = "game", ty = "&mut crate::game::Game<'_>", value = "&mut *self" },
+    { name = "elapsed", ty = "std::time::Duration", value = "elapsed" },
+]
+
+# Camera roll: spin_matrix survived the cutover at a new module path.
+[[native.mixin]]
+id = "spin-roll"
+target = "horizon_client::game::fov::Game<'_>::spinning_matrix"
+kind = "RETURN"
+helper = "src/mixins/spin.rs"
+bindings = [
+    { name = "value", ty = "glam::Mat4", value = "$value" },
+]
+
+# Issue #2: invert the pitch (Y) mouse axis. The player's own turn reads the
+# yo parameter; negating it inverts vertical look without touching X.
+[[native.mixin]]
+id = "invert-y"
+target = "horizon_client::game::perspective::Game<'_>::turn_player"
+kind = "MODIFY_VARIABLE"
+helper = "src/mixins/invert_y.rs"
+bindings = [
+    { name = "value", ty = "f64", value = "$value" },
+]
+variable = { name = "yo", ordinal = 0, at = "LOAD", parameter = true }
+require = 1
+ordinal = 0
