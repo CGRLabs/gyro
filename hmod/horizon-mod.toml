@@ -1,5 +1,5 @@
 id = "gyro"
-name = "Gyro"
+name = "Do a Barrel Roll"
 version = "1.9.0"
 description = "Look where you want to go: while gliding, the mouse steers you like walking, and the world leans gently into turns. Settings let you invert the Y axis and tune the lean."
 authors = ["CGRLabs"]

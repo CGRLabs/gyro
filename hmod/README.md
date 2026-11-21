@@ -1,6 +1,6 @@
-# Gyro — native `.hmod`
+# Do a Barrel Roll — native `.hmod`
 
-This directory is the 1.9.0 port of Gyro to Horizon's new native `.hmod` format. The old
+This directory is the 1.9.0 port of Do a Barrel Roll to Horizon's new native `.hmod` format. The old
 `.hnmod` mixin tree at the repository root remains for history; this is the build published for
 launchers 0.2.70 and later.
 
@@ -15,7 +15,7 @@ launchers 0.2.70 and later.
 - The frame helper advances the bank from the local player's turn rate once per rendered frame.
 - The camera helper applies the bank to `Game::spinning_matrix`.
 - A new mixin on `Game::turn_player` negates the pitch input when **Invert Y** is enabled.
-- Options > Mods > Gyro > Config now has real settings: Invert Y, Bank strength and Max bank.
+- Options > Mods > Do a Barrel Roll > Config now has real settings: Invert Y, Bank strength and Max bank.
   The old fake keybind rows are gone; settings are read every frame and have usable defaults.
 
 ## Build and check

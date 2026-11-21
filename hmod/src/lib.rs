@@ -1,4 +1,4 @@
-//! Gyro — look where you want to go: while gliding, the mouse steers you just like it
+//! Do a Barrel Roll — look where you want to go: while gliding, the mouse steers you just like it
 //! does when you walk, and the world leans gently into your turns.
 //!
 //! Ported from the retired `.hnmod` (v1.8.2) to the new native `.hmod` format.
@@ -26,7 +26,7 @@ static INVERT_Y: AtomicU32 = AtomicU32::new(0);
 static MAX_BANK_BITS: AtomicU32 = AtomicU32::new(MAX_BANK.to_bits());
 static BANK_RATE_BITS: AtomicU32 = AtomicU32::new(BANK_PER_RATE.to_bits());
 
-/// Read the current settings from the game host (Options > Mods > Gyro).
+/// Read the current settings from the game host (Options > Mods > Do a Barrel Roll).
 /// Missing or reset values fall back to the defaults, so a reset rebakes them.
 pub fn refresh_settings(host: &dyn mod_api::ClientHost) {
     let invert = host.setting_bool("invert_y").unwrap_or(false);
@@ -101,7 +101,7 @@ pub fn tick(gliding: bool, elapsed: Duration, yaw: f32) -> f32 {
     roll
 }
 
-/// Settings are registered here so Options > Mods > Gyro shows real, editable
+/// Settings are registered here so Options > Mods > Do a Barrel Roll shows real, editable
 /// rows with working defaults (the old `.hnmod` faked keybind rows that did
 /// nothing and could not be reset — issues #1 and #2).
 #[derive(Default)]
