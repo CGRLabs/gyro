@@ -33,10 +33,13 @@ bindings = [
     { name = "value", ty = "glam::Mat4", value = "$value" },
 ]
 
-# Issue #2: invert the pitch (Y) mouse axis. The player's own turn reads the
-# yo parameter; negating it inverts vertical look without touching X.
+# Issue #2: invert the pitch (Y) mouse axis. `turn_player` takes `yo` and reads
+# it at three places — the studio freecam turn, the look rotation, and the held
+# lead's previous rotation — so all three reads are negated to keep them in
+# step. `require` is that access count over the whole body; each row then
+# selects one read by its ordinal.
 [[native.mixin]]
-id = "invert-y"
+id = "invert-y-freecam"
 target = "horizon_client::game::perspective::Game<'_>::turn_player"
 kind = "MODIFY_VARIABLE"
 helper = "src/mixins/invert_y.rs"
@@ -44,5 +47,29 @@ bindings = [
     { name = "value", ty = "f64", value = "$value" },
 ]
 variable = { name = "yo", ordinal = 0, at = "LOAD", parameter = true }
-require = 1
+require = 3
 ordinal = 0
+
+[[native.mixin]]
+id = "invert-y-look"
+target = "horizon_client::game::perspective::Game<'_>::turn_player"
+kind = "MODIFY_VARIABLE"
+helper = "src/mixins/invert_y.rs"
+bindings = [
+    { name = "value", ty = "f64", value = "$value" },
+]
+variable = { name = "yo", ordinal = 0, at = "LOAD", parameter = true }
+require = 3
+ordinal = 1
+
+[[native.mixin]]
+id = "invert-y-rope"
+target = "horizon_client::game::perspective::Game<'_>::turn_player"
+kind = "MODIFY_VARIABLE"
+helper = "src/mixins/invert_y.rs"
+bindings = [
+    { name = "value", ty = "f64", value = "$value" },
+]
+variable = { name = "yo", ordinal = 0, at = "LOAD", parameter = true }
+require = 3
+ordinal = 2
