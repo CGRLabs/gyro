@@ -1,0 +1,10 @@
+[package]
+name = "mod-gyro"
+version = "1.9.0"
+edition = "2024"
+
+[dependencies]
+horizon-mod-api = { path = ".horizon/sdk/api/crates/horizon-mod-api" }
+
+[package.metadata.horizon]
+sdk = "0b14f8acfd97fa2c750e42795249dcc981178ca4"
