@@ -32,4 +32,4 @@ cargo horizon-mod check target/horizon-mod/gyro.hmod --json
 `[[native.mixin]]` tables, so `fits` does not apply.
 
 The checked 1.9.0 package has SHA-256
-`848b073c1555be49347fc922aafdee9fedc2da3bdffc54040b4daeb112a990f2`.
+`eee4e7220eae67a667150b22642730201d6ee877ab7449a859d455ba391af170`.
