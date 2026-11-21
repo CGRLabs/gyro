@@ -35,5 +35,3 @@ The repository root pins an older toolchain for the legacy `.hnmod` tree, so set
 `cargo horizon-mod fits` is intentionally not used: this is a single-build native mod with
 `[[native.mixin]]` tables, so `fits` does not apply.
 
-The checked 1.9.0 package has SHA-256
-`eee4e7220eae67a667150b22642730201d6ee877ab7449a859d455ba391af170`.
