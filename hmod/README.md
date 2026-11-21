@@ -22,11 +22,15 @@ launchers 0.2.70 and later.
 
 ```sh
 cd hmod
-cargo test
-cargo horizon-mod check
+RUSTUP_TOOLCHAIN=1.99.1 cargo test
 cargo horizon-mod build
+RUSTUP_TOOLCHAIN=1.99.1 cargo horizon-mod check
 cargo horizon-mod check target/horizon-mod/gyro.hmod --json
 ```
+
+The repository root pins an older toolchain for the legacy `.hnmod` tree, so set
+`RUSTUP_TOOLCHAIN=1.99.1` when running plain Cargo or the source check from `hmod/`.
+`cargo horizon-mod build` selects the pinned toolchain itself.
 
 `cargo horizon-mod fits` is intentionally not used: this is a single-build native mod with
 `[[native.mixin]]` tables, so `fits` does not apply.
